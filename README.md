@@ -1,39 +1,61 @@
 # KVVM AI Serve
 
-KVVM AI Serve
+This KVVM AI Backend server.
 
-## 开发
-
-### 控制器
-
-采用薄 `controller` 设计, 业务逻辑应在 `service` 中实现.
-
-`controller` 中应当只有验证参数和简单流程.
-
-### 模型
-
-因为使用了 `typegoose`, 必须在使用 `model` 的 `controller` 或 `service` 里使用 `getModelForClass`导出模型
-
-为了减小耦合, 应当只在 `service` 中使用模型.
-
-如果在 `model/modelName.ts `导出, 则很可能导致运行时才能发现的循环依赖报错
-
-### 服务
-
-默认注册有 restful 的 crud 接口, 但是只能操作 `mongoose` 连接中注册了的模型
-
-如果新添加了模型 A, 但是没有任何一个控制器和路由依赖它(未挂载到 `app` 的依赖链上, 未注册到 `mongoose` 里), 则无法操作
-
-[get]/model/dict 接口返回中也不会有 A.
-
-### Utils
-
-utils中的函数必须是没有副作用的, 即不能改变函数作用域以外的变量, 也不能依赖当前文件和node_modules以外的东西
-
-## 构建
+## Build
 
 ### Docker image
 
 ```bash
 docker build -t kvvm-ai-serve .
 ```
+
+## Deploy
+
+### Docker
+
+#### Run for develop and on internal network
+
+```bash
+docker compose -d up
+```
+
+#### Run on public network
+
+> !!!WARNGING!!! Must use tls on public network, or you will be under great risk.
+
+1. Edit `docker-compose.prod.yml`, change `JWT_SECRET` `VERIFY_CODE` `COTURN_SECRET`
+2. Edit `docker-compose.prod.yml`, add `volumes` which point to cert files
+3. Edit `configs/coturn/turnserver.conf`, change `tls-listening-port` `external-ip` `realm` `cert` `pkey`, see `configs/coturn/turnserver.example.conf`
+
+```bash
+docker compose -d -f docker-compose.prod.yml up
+```
+
+## Develop
+
+### Controller
+
+Adopts a thin `controller` design; business logic should be implemented in the service.
+
+The `controller` should only handle parameter validation and simple flow control.
+
+### Model
+
+Since `typegoose` is used, the model must be exported using `getModelForClass` in any `service` that uses the model.
+
+To reduce coupling, models should only be used within `service`.
+
+If exported in `model/modelName.ts`, it may lead to circular dependency errors that are only discovered at runtime.
+
+### Service
+
+CRUD endpoints for RESTful APIs are registered by default, but they can only operate on models registered in the `mongoose` connection.
+
+If a new model A is added but no controller or route depends on it (i.e., it is not mounted to the `app`'s require chain and not registered in `mongoose`), it cannot be operated on.
+
+Model A will also not appear in the response of the `[GET] /model/dict` endpoint.
+
+### Utils
+
+Functions in `utils` must be side-effect-free, meaning they should not modify variables outside their scope nor depend on anything outside the current file and `node_modules`.

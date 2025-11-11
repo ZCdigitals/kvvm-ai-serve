@@ -37,6 +37,18 @@ services:
       - COTURN_SECRET=thisisaverylongcoturnsecretindocker
     restart: unless-stopped
 
+  coturn:
+    image: coturn/coturn
+    container_name: coturn
+    volumes:
+      - ./configs/coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+    # ports:
+    #   - "3478:3478"
+    #   - "3478:3478/udp"
+    #   - "50000-50100/udp"
+    network_mode: host # 建议 Coturn 使用 host 网络模式以提高 NAT 穿透可靠性
+
 volumes:
   mongo-config:
   mongo-data:
