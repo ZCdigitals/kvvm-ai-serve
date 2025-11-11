@@ -1,0 +1,56 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-config:/data/configdb
+      - mongo-data:/data/db # 此卷被定义为外部卷，需提前创建
+      - mongo-logs:/var/log/mongodb
+      - ./configs/mongo/mongod.conf:/etc/mongod.conf
+    command: --config /etc/mongod.conf
+    restart: unless-stopped
+
+  # kvvm-ai:
+  #   image: kvvm-ai-serve
+  #   container_name: kvvm-ai
+  #   depends_on:
+  #     - mongo
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     # node env
+  #     - NODE_ENV=production
+  #     # serve
+  #     - PORT=3000
+  #     - ORIGIN=http://localhost:5173,http://127.0.0.1:5173
+  #     - JWT_SECRET=thisisaverylongjwtsecretindocker
+  #     # - VERIFY_CODE_ENABLE = true
+  #     - VERIFY_CODE=123456
+  #     - PUBLIC_DIR=public
+  #     - PRIVATE_DIR=private
+  #     # db
+  #     - MONGODB_URI=mongodb://mongo:27017
+  #     - MONGODB_DBNAME=kvvm-ai
+  #     # coturn
+  #     - COTURN_SECRET=thisisaverylongcoturnsecretindocker
+  #   restart: unless-stopped
+
+  coturn:
+    image: coturn/coturn
+    container_name: coturn
+    volumes:
+      - ./configs/coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+    ports:
+      - "3478:3478"
+      - "3478:3478/udp"
+      - "50000-51000/udp"
+    # network_mode: host # 建议 Coturn 使用 host 网络模式以提高 NAT 穿透可靠性
+
+volumes:
+  mongo-config:
+  mongo-data:
+    external: true # 此为外部卷，请确保已通过 'docker volume create mongo-data' 创建
+  mongo-logs:

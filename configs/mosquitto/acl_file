@@ -1,0 +1,10 @@
+# 用户 ‘admin’ 拥有所有主题的读写权限
+user admin
+topic readwrite #
+
+# 设备用户
+user device
+topic write device/+/heartbeat
+topic write device/+/status
+topic read device/+/request
+topic write device/+/response
