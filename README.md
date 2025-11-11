@@ -14,13 +14,13 @@ docker build -t kvvm-ai-serve .
 
 ### Docker
 
-#### Run for develop and on internal network
+#### For test and on internal network
 
 ```bash
 docker compose -d up
 ```
 
-#### Run on public network
+#### On public network
 
 > !!!WARNGING!!! Must use tls on public network, or you will be under great risk.
 
