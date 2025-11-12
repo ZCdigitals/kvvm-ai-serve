@@ -32,6 +32,18 @@ docker compose -d up
 docker compose -d -f docker-compose.prod.yml up
 ```
 
+### MQTT
+
+Before establishing a WebRTC peer connection, we rely on WebSocket for signaling transmission.
+
+Therefore, devices initiate a WebSocket connection upon startup and maintain it throughout the entire lifecycle of the application. This approach works adequately in the short term and with a small number of devices.
+
+However, it does not ensure long-term reliability nor support a large scale of devices.
+
+Hence, MQTT is used to communicate device online status and trigger the WebSocket connection.
+
+If you do not wish to enable MQTT, leave the `MQTT_BROKER_URL` environment variable empty.
+
 ## Develop
 
 ### Controller
