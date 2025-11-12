@@ -5,11 +5,22 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo-config:/data/configdb
+      - mongo-config:/data/configdb:ro
       - mongo-data:/data/db # 此卷被定义为外部卷，需提前创建
       - mongo-logs:/var/log/mongodb
       - ./configs/mongo/mongod.conf:/etc/mongod.conf
     command: --config /etc/mongod.conf
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:openssl
+    container_name: mqtt
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./configs/mosquitto:/mosquitto/config:ro
+      - mqtt-data:/mosquitto/data
+      - mqtt-logs:/mosquitto/log
     restart: unless-stopped
 
   kvvm-ai:
@@ -17,6 +28,7 @@ services:
     container_name: kvvm-ai
     depends_on:
       - mongo
+      - mqtt
     ports:
       - "3000:3000"
     environment:
@@ -42,3 +54,5 @@ volumes:
   mongo-data:
     external: true # 此为外部卷，请确保已通过 'docker volume create mongo-data' 创建
   mongo-logs:
+  mqtt-data:
+  mqtt-logs:

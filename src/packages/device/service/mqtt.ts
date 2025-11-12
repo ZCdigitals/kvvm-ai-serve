@@ -29,7 +29,6 @@ function initMqtt() {
 
   client.on("error", (err) => {
     console.error("mqtt error", err);
-    process.exit(1);
   });
 
   client.on("close", () => {
@@ -75,7 +74,7 @@ export async function sendDeviceRequest(
   // ensuer ownership
   await readDevice(id, user);
 
-  const t = `device/${id}/fetch`;
+  const t = `device/${id}/request`;
 
   client.publish(
     t,
@@ -124,7 +123,7 @@ async function onDeviceMessage(
       case "heartbeat":
         await onDeviceHeartbeat(id);
         break;
-      case "fetch":
+      case "response":
         sendDeviceResponse(id, data);
         break;
       case undefined:

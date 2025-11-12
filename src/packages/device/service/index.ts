@@ -6,7 +6,7 @@ import { sleep } from "../../../utils/sleep";
 import { Forbidden, NotFound } from "../../core";
 import { InputId } from "../../core/model";
 import { DeviceClass, DeviceStatus } from "../model";
-import { startWssPingJob } from "./fetch";
+import { startWssPingJob } from "./ws";
 
 const DeviceModel = getModelForClass(DeviceClass);
 
@@ -88,6 +88,6 @@ async function setDeviceOffline() {
 scheduleJob("0 */5 * * * *", setDeviceOffline);
 startWssPingJob();
 
-export * from "./fetch";
 export * from "./key";
 export * from "./mqtt";
+export * from "./ws";

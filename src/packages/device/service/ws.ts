@@ -78,6 +78,7 @@ async function wssPing() {
       }
 
       ws.ping(undefined, undefined, (err) => {
+        if (!err) return;
         console.error("user ws ping error", id, err);
       });
     }
@@ -93,6 +94,7 @@ async function wssPing() {
       }
 
       ws.ping(undefined, undefined, (err) => {
+        if (!err) return;
         console.error("devices ws ping error", id, err);
       });
     }
