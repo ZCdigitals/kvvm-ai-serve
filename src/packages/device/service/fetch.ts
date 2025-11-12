@@ -67,33 +67,33 @@ async function wssPing() {
   try {
     console.log("wss ping job start", new Date());
 
-    // ping uses
+    // ping users
     for (const [id, ws] of userWss) {
-      if (ws.readyState == WebSocket.OPEN) {
+      if (
+        ws.readyState == WebSocket.CLOSING ||
+        ws.readyState == WebSocket.CLOSED
+      ) {
         userWss.delete(id);
         return;
       }
 
-      await new Promise((resolve, reject) => {
-        ws.ping(undefined, undefined, (err) => {
-          if (!err) resolve(id);
-          else reject(err);
-        });
+      ws.ping(undefined, undefined, (err) => {
+        console.error("user ws ping error", id, err);
       });
     }
 
     // ping devices
     for (const [id, ws] of deviceWss) {
-      if (ws.readyState == WebSocket.OPEN) {
+      if (
+        ws.readyState == WebSocket.CLOSING ||
+        ws.readyState == WebSocket.CLOSED
+      ) {
         deviceWss.delete(id);
         return;
       }
 
-      await new Promise((resolve, reject) => {
-        ws.ping(undefined, undefined, (err) => {
-          if (!err) resolve(id);
-          else reject(err);
-        });
+      ws.ping(undefined, undefined, (err) => {
+        console.error("devices ws ping error", id, err);
       });
     }
 
