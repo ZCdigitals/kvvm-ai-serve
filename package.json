@@ -1,7 +1,6 @@
 {
   "name": "kvvm-ai-serve",
   "version": "0.3.7",
-  "private": true,
   "author": "Alex",
   "scripts": {
     "dev": "export NODE_ENV='development' && ts-node ./src/bin/www.ts",
