@@ -3,7 +3,7 @@ import { describe, test } from "node:test";
 import { buildTestUserHeaders, service } from ".";
 
 describe("core intergration test", () => {
-  test("version", async () => {
+  test("get version", async () => {
     const { status, data } = await service.get("/version");
     strictEqual(status, 200, "status should be 200");
     strictEqual(
@@ -12,10 +12,10 @@ describe("core intergration test", () => {
       "version should be equal",
     );
   });
-  test("coffee", { skip: true }, () => {
+  test("get coffee", { skip: true }, () => {
     // skip
   });
-  test("ping", async () => {
+  test("get ping and post ping", async () => {
     const { status, data } = await service.get("/ping", {
       params: { data: "hello" },
     });
@@ -27,7 +27,7 @@ describe("core intergration test", () => {
     strictEqual(s2, 200, "status should be 200");
     strictEqual(d2.data.data, "hello", "data should be equal");
   });
-  test("status", { skip: true }, async () => {
+  test("get status", { skip: true }, async () => {
     // this test should be skipped
     // because the status api need admin role
     const { status, data } = await service.get("/status", {
@@ -53,13 +53,13 @@ describe("dict intergration test", () => {
 });
 
 describe("role intergration test", () => {
-  test("get self", async () => {
-    const { data } = await service.post("/user/login", {
-      username: "admin",
+  test("get role", async () => {
+    const { data } = await service.post("/user/token", {
+      email: "admin@kvvm.ai",
       password: "admin12345",
     });
-    const { status, data: d2 } = await service.get("/role/self", {
-      headers: { Authorization: `Bearer ${data.data.token}` },
+    const { status, data: d2 } = await service.get("/role", {
+      headers: { Authorization: `Bearer ${data.data}` },
     });
     strictEqual(status, 200, "status should be 200");
     strictEqual(d2.data.name, "admin", "role should be admin");

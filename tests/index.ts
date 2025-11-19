@@ -10,43 +10,35 @@ export const service = axios.create({
 });
 
 class TestUser {
-  public readonly username: string;
+  public readonly email: string;
   private readonly password: string;
   private _id?: string;
   private _token?: string;
 
-  constructor(username: string, password: string) {
-    this.username = username;
+  constructor(email: string, password: string) {
+    this.email = email;
     this.password = password;
   }
 
-  public async login() {
-    const { status, data } = await service.post("/user/login", {
-      username: this.username,
+  public async postToken() {
+    const { status, data } = await service.post("/user/token", {
+      email: this.email,
       password: this.password,
     });
     if (status === 200) {
-      this._id = data.data.uid;
-      this._token = data.data.token;
+      this._token = data.data;
     }
     return { status, data };
   }
 
-  public async id() {
-    if (!this._id) {
-      await this.login();
-    }
-    return this._id;
-  }
-
   public async token() {
     if (!this._token) {
-      await this.login();
+      await this.postToken();
     }
     return this._token;
   }
 }
-export const testUser = new TestUser("test", "test12345");
+export const testUser = new TestUser("test@zcdigitals.com", "test12345");
 export async function buildTestUserHeaders() {
   return {
     Authorization: `Bearer ${await testUser.token()}`,
