@@ -12,6 +12,7 @@ import {
   post,
   PostRequestHandler,
   put,
+  Unauthorized,
 } from "../../core";
 import { UserInfo } from "../../core/middleware";
 import { Gender } from "../../core/model";
@@ -187,6 +188,7 @@ export class UserController {
     nest,
   ) => {
     // throw NotImplemented();
+
     const { username, password, phone, email, verifyCode } = req.body;
 
     if (username) {
@@ -308,13 +310,19 @@ export class UserController {
   };
 
   @get("/:id/info")
-  public getInfo: GetRequestHandler<BaseRes, never> = async (
+  public getInfo: GetRequestHandler<BaseRes, never, UserInfo> = async (
     req,
     res,
     next,
   ) => {
-    const { id } = req.params;
+    let { id } = req.params;
     if (!id) throw InternalServerError("null id");
+    const { uid } = res.locals;
+
+    if (id === "self") {
+      if (!uid) throw Unauthorized();
+      else id = uid;
+    }
 
     const data = await readUserPublicInfo(id);
 
@@ -325,10 +333,11 @@ export class UserController {
   @loginAuth
   public putInfo: PostRequestHandler<BaseRes, PutInfoData, never, UserInfo> =
     async (req, res, next) => {
-      const { id } = req.params;
+      let { id } = req.params;
       if (!id) throw InternalServerError("null id");
       const { uid } = res.locals;
 
+      if (id === "self") id = uid!;
       if (id !== uid) throw Forbidden("Can only update self");
 
       const { nickName, avatar, desc, cover } = req.body;
@@ -371,10 +380,11 @@ export class UserController {
     never,
     UserInfo
   > = async (req, res, next) => {
-    const { id } = req.params;
+    let { id } = req.params;
     if (!id) throw InternalServerError("null id");
     const { uid } = res.locals;
 
+    if (id === "self") id = uid!;
     if (id !== uid) throw Forbidden("Can only update self");
 
     const { password } = req.body;
