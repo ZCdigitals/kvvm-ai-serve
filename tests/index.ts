@@ -38,7 +38,7 @@ class TestUser {
     return this._token;
   }
 }
-export const testUser = new TestUser("test@zcdigitals.com", "test12345");
+export const testUser = new TestUser("test@kvvm.ai", "test12345");
 export async function buildTestUserHeaders() {
   return {
     Authorization: `Bearer ${await testUser.token()}`,

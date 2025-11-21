@@ -9,14 +9,14 @@ docker run -d --name coturn-dev -p 3478:3478 -p 3478:3478/udp -p 50000-50010:500
 
 # test
 # 测试UDP协议
-turnutils_uclient -v -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.zcdigitals.com
+turnutils_uclient -v -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.kvvm.ai
 
 # 测试TCP协议
-turnutils_uclient -v -t -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.zcdigitals.com
+turnutils_uclient -v -t -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.kvvm.ai
 
 # 测试TLS协议
-turnutils_uclient -v -S -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.zcdigitals.com
+turnutils_uclient -v -S -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.kvvm.ai
 
 # 指定端口测试
-turnutils_uclient -v -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.zcdigitals.com -p 3478
+turnutils_uclient -v -u 1757774233:68c420f1131563afb295af20 -w LjDHWbvav7PBtbjXisN/MgrXeXI= test.kvvm.ai -p 3478
 ```

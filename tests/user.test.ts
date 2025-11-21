@@ -5,14 +5,14 @@ import { buildTestUserHeaders, service, testUser } from ".";
 describe("user intergration test", () => {
   test("post and delete", async () => {
     const { status: s1 } = await service.post("/user", {
-      email: "test1@zcdigitals.com",
+      email: "test1@kvvm.ai",
       password: "test12345",
       verifyCode: process.env.VERIFY_CODE,
     });
     strictEqual(s1, 200, "status should be 200");
 
     const { status: s2, data } = await service.post("/user/token", {
-      email: "test1@zcdigitals.com",
+      email: "test1@kvvm.ai",
       password: "test12345",
     });
     strictEqual(s2, 200, "status should be 200");
