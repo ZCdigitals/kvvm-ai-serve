@@ -17,3 +17,12 @@ redis.on("error", (err) => {
   console.error("redis client error", err);
 });
 // redis.connect();
+
+function close() {
+  if (!redis.isOpen) return;
+  redis.destroy();
+}
+
+// close on signal
+process.on("SIGTERM", close);
+process.on("SIGINT", close);
