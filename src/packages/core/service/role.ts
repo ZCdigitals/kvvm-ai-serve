@@ -8,32 +8,25 @@ export async function readRole(id: InputId) {
   return await RoleModel.findById(id);
 }
 
-export async function readAdminRole() {
-  return await RoleModel.findOne({ name: "admin" });
-}
+let adminRole: FlattenMaps<RoleClass> | undefined = undefined;
 
-export let adminRole: FlattenMaps<RoleClass> | undefined = undefined;
+export async function useAdminRole(): Promise<FlattenMaps<RoleClass>> {
+  if (adminRole) return adminRole;
 
-export async function initAdminRole() {
-  try {
-    let ar = await readAdminRole();
+  const ar = await RoleModel.findOne({ name: "admin" });
 
-    if (!ar) {
-      ar = new RoleModel({
-        name: "admin",
-        desc: "超级管理员",
-      });
+  if (!ar) {
+    const nar = new RoleModel({
+      name: "admin",
+      desc: "超级管理员",
+    });
+    await nar.save();
+    console.log("create admin role", nar._id.toString());
 
-      await ar.save();
-      console.log("create admin role", ar._id.toString());
-
-      adminRole = ar.toJSON();
-    } else {
-      console.log("admin role exists", ar._id.toString());
-
-      adminRole = ar.toJSON();
-    }
-  } catch (err) {
-    console.error("init admin role error", err);
+    adminRole = nar.toJSON();
+  } else {
+    adminRole = ar.toJSON();
   }
+
+  return adminRole;
 }

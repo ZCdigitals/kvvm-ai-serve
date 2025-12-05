@@ -1,16 +1,19 @@
 import { UserInfo } from ".";
 import { buildMiddleware, Forbidden } from "../lib";
-import { adminRole } from "../service";
+import { useAdminRole } from "../service";
 
 /**
  * role为admin才能访问
  */
 export const adminRoleAuth = buildMiddleware<never, never, never, UserInfo>(
-  (req, res, next) => {
+  async (req, res, next) => {
     const { username, role } = res.locals;
 
     if (username === "admin") return next();
-    else if (!adminRole) throw Forbidden("Null admin");
+
+    const adminRole = await useAdminRole();
+
+    if (!adminRole) throw Forbidden("Null admin");
     else if (!adminRole._id.equals(role)) throw Forbidden("Not admin");
 
     next();
